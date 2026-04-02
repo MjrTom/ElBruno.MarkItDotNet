@@ -29,12 +29,13 @@ public class MarkdownConverter
     /// Converts the content of a file to Markdown.
     /// </summary>
     /// <param name="filePath">Path to the file to convert.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The Markdown representation of the file content.</returns>
-    public string ConvertToMarkdown(string filePath)
+    public string ConvertToMarkdown(string filePath, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
 
-        var result = _service.ConvertAsync(filePath).GetAwaiter().GetResult();
+        var result = _service.ConvertAsync(filePath, cancellationToken).GetAwaiter().GetResult();
         if (!result.Success)
         {
             throw new NotSupportedException(result.ErrorMessage);

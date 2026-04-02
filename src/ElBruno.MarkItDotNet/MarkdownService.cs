@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+
 namespace ElBruno.MarkItDotNet;
 
 /// <summary>
@@ -20,8 +23,9 @@ public class MarkdownService
     /// Converts a file at the given path to Markdown.
     /// </summary>
     /// <param name="filePath">Path to the file to convert.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A <see cref="ConversionResult"/> with the outcome.</returns>
-    public async Task<ConversionResult> ConvertAsync(string filePath)
+    public async Task<ConversionResult> ConvertAsync(string filePath, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
 
@@ -36,9 +40,18 @@ public class MarkdownService
 
         try
         {
+            var sw = Stopwatch.StartNew();
             using var stream = File.OpenRead(filePath);
-            var markdown = await converter.ConvertAsync(stream, extension).ConfigureAwait(false);
-            return ConversionResult.Succeeded(markdown, extension);
+            var markdown = await converter.ConvertAsync(stream, extension, cancellationToken).ConfigureAwait(false);
+            sw.Stop();
+
+            var metadata = new ConversionMetadata
+            {
+                WordCount = CountWords(markdown),
+                ProcessingTime = sw.Elapsed
+            };
+
+            return ConversionResult.Succeeded(markdown, extension, metadata);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
@@ -51,8 +64,9 @@ public class MarkdownService
     /// </summary>
     /// <param name="stream">The input stream containing file content.</param>
     /// <param name="fileExtension">File extension including the leading dot (e.g., ".txt").</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A <see cref="ConversionResult"/> with the outcome.</returns>
-    public async Task<ConversionResult> ConvertAsync(Stream stream, string fileExtension)
+    public async Task<ConversionResult> ConvertAsync(Stream stream, string fileExtension, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(stream);
         ArgumentException.ThrowIfNullOrWhiteSpace(fileExtension);
@@ -68,12 +82,116 @@ public class MarkdownService
 
         try
         {
-            var markdown = await converter.ConvertAsync(stream, extension).ConfigureAwait(false);
-            return ConversionResult.Succeeded(markdown, extension);
+            var sw = Stopwatch.StartNew();
+            var markdown = await converter.ConvertAsync(stream, extension, cancellationToken).ConfigureAwait(false);
+            sw.Stop();
+
+            var metadata = new ConversionMetadata
+            {
+                WordCount = CountWords(markdown),
+                ProcessingTime = sw.Elapsed
+            };
+
+            return ConversionResult.Succeeded(markdown, extension, metadata);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             return ConversionResult.Failure(ex.Message, extension);
         }
+    }
+
+    /// <summary>
+    /// Converts a file at the given path to Markdown, yielding chunks asynchronously.
+    /// If the resolved converter implements <see cref="IStreamingMarkdownConverter"/>,
+    /// chunks are streamed page-by-page; otherwise the full result is yielded as a single chunk.
+    /// </summary>
+    /// <param name="filePath">Path to the file to convert.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    public async IAsyncEnumerable<string> ConvertStreamingAsync(
+        string filePath,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
+
+        var extension = Path.GetExtension(filePath).ToLowerInvariant();
+        var converter = _registry.Resolve(extension)
+            ?? throw new NotSupportedException($"File format '{extension}' is not supported.");
+
+        using var stream = File.OpenRead(filePath);
+
+        await foreach (var chunk in ConvertStreamingCoreAsync(converter, stream, extension, cancellationToken).ConfigureAwait(false))
+        {
+            yield return chunk;
+        }
+    }
+
+    /// <summary>
+    /// Converts a stream to Markdown, yielding chunks asynchronously.
+    /// If the resolved converter implements <see cref="IStreamingMarkdownConverter"/>,
+    /// chunks are streamed page-by-page; otherwise the full result is yielded as a single chunk.
+    /// </summary>
+    /// <param name="stream">The input stream containing file content.</param>
+    /// <param name="fileExtension">File extension including the leading dot (e.g., ".pdf").</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    public async IAsyncEnumerable<string> ConvertStreamingAsync(
+        Stream stream,
+        string fileExtension,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileExtension);
+
+        var extension = fileExtension.ToLowerInvariant();
+        var converter = _registry.Resolve(extension)
+            ?? throw new NotSupportedException($"File format '{extension}' is not supported.");
+
+        await foreach (var chunk in ConvertStreamingCoreAsync(converter, stream, extension, cancellationToken).ConfigureAwait(false))
+        {
+            yield return chunk;
+        }
+    }
+
+    private static async IAsyncEnumerable<string> ConvertStreamingCoreAsync(
+        IMarkdownConverter converter,
+        Stream stream,
+        string extension,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        if (converter is IStreamingMarkdownConverter streaming)
+        {
+            await foreach (var chunk in streaming.ConvertStreamingAsync(stream, extension, cancellationToken).ConfigureAwait(false))
+            {
+                yield return chunk;
+            }
+        }
+        else
+        {
+            var markdown = await converter.ConvertAsync(stream, extension, cancellationToken).ConfigureAwait(false);
+            yield return markdown;
+        }
+    }
+
+    private static int CountWords(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return 0;
+
+        var count = 0;
+        var inWord = false;
+
+        foreach (var ch in text)
+        {
+            if (char.IsWhiteSpace(ch))
+            {
+                inWord = false;
+            }
+            else if (!inWord)
+            {
+                inWord = true;
+                count++;
+            }
+        }
+
+        return count;
     }
 }

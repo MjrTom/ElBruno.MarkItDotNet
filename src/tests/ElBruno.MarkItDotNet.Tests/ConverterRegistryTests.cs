@@ -125,7 +125,7 @@ public class ConverterRegistryTests
         public bool CanHandle(string fileExtension) =>
             fileExtension.Equals(_extension, StringComparison.OrdinalIgnoreCase);
 
-        public Task<string> ConvertAsync(Stream fileStream, string fileExtension) =>
+        public Task<string> ConvertAsync(Stream fileStream, string fileExtension, CancellationToken cancellationToken = default) =>
             Task.FromResult("stub");
     }
 }

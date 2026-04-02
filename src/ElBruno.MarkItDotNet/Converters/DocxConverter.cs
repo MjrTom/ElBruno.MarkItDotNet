@@ -16,7 +16,7 @@ public class DocxConverter : IMarkdownConverter
         fileExtension.Equals(".docx", StringComparison.OrdinalIgnoreCase);
 
     /// <inheritdoc />
-    public Task<string> ConvertAsync(Stream fileStream, string fileExtension)
+    public Task<string> ConvertAsync(Stream fileStream, string fileExtension, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(fileStream);
 

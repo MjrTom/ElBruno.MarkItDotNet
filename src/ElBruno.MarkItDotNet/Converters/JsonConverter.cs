@@ -18,11 +18,11 @@ public class JsonConverter : IMarkdownConverter
         fileExtension.Equals(".json", StringComparison.OrdinalIgnoreCase);
 
     /// <inheritdoc />
-    public async Task<string> ConvertAsync(Stream fileStream, string fileExtension)
+    public async Task<string> ConvertAsync(Stream fileStream, string fileExtension, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(fileStream);
         using var reader = new StreamReader(fileStream, leaveOpen: true);
-        var content = await reader.ReadToEndAsync().ConfigureAwait(false);
+        var content = await reader.ReadToEndAsync(cancellationToken).ConfigureAwait(false);
 
         if (string.IsNullOrWhiteSpace(content))
         {

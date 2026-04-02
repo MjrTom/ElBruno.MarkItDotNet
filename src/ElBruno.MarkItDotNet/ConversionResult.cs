@@ -17,19 +17,23 @@ public sealed class ConversionResult
     /// <summary>Error message when <see cref="Success"/> is false; null otherwise.</summary>
     public string? ErrorMessage { get; }
 
-    private ConversionResult(string markdown, string sourceFormat, bool success, string? errorMessage)
+    /// <summary>Optional metadata about the conversion (timing, word count, page count).</summary>
+    public ConversionMetadata? Metadata { get; }
+
+    private ConversionResult(string markdown, string sourceFormat, bool success, string? errorMessage, ConversionMetadata? metadata)
     {
         Markdown = markdown;
         SourceFormat = sourceFormat;
         Success = success;
         ErrorMessage = errorMessage;
+        Metadata = metadata;
     }
 
     /// <summary>Creates a successful conversion result.</summary>
-    public static ConversionResult Succeeded(string markdown, string sourceFormat) =>
-        new(markdown, sourceFormat, success: true, errorMessage: null);
+    public static ConversionResult Succeeded(string markdown, string sourceFormat, ConversionMetadata? metadata = null) =>
+        new(markdown, sourceFormat, success: true, errorMessage: null, metadata: metadata);
 
     /// <summary>Creates a failed conversion result.</summary>
     public static ConversionResult Failure(string error, string sourceFormat) =>
-        new(string.Empty, sourceFormat, success: false, errorMessage: error);
+        new(string.Empty, sourceFormat, success: false, errorMessage: error, metadata: null);
 }
