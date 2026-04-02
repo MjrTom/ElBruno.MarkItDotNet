@@ -13,5 +13,20 @@
   </Folder>
   <Folder Name="/src/samples/">
     <Project Path="src/samples/BasicConversion/BasicConversion.csproj" />
+    <Project Path="src/samples/CsvConversion/CsvConversion.csproj" />
+    <Project Path="src/samples/XmlYamlConversion/XmlYamlConversion.csproj" />
+    <Project Path="src/samples/PdfConversion/PdfConversion.csproj" />
+    <Project Path="src/samples/DocxConversion/DocxConversion.csproj" />
+    <Project Path="src/samples/RtfEpubConversion/RtfEpubConversion.csproj" />
+    <Project Path="src/samples/ExcelConversion/ExcelConversion.csproj" />
+    <Project Path="src/samples/PowerPointConversion/PowerPointConversion.csproj" />
+    <Project Path="src/samples/AiImageDescription/AiImageDescription.csproj" />
+    <Project Path="src/samples/StreamingConversion/StreamingConversion.csproj" />
+    <Project Path="src/samples/CustomConverter/CustomConverter.csproj" />
+    <Project Path="src/samples/PluginPackage/PluginPackage.csproj" />
+    <Project Path="src/samples/AllFormats/AllFormats.csproj" />
+    <Project Path="src/samples/MarkItDotNet.WebApi/MarkItDotNet.WebApi.csproj" />
+    <Project Path="src/samples/BatchProcessor/BatchProcessor.csproj" />
+    <Project Path="src/samples/RagPipeline/RagPipeline.csproj" />
   </Folder>
 </Solution>

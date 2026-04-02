@@ -410,14 +410,39 @@ services.AddSingleton<IConverterPlugin>(new MyCustomPlugin());
 
 The registry automatically discovers and loads all registered plugins.
 
-## Samples
+## 📦 Samples
 
-| Sample | Description |
-|--------|-------------|
-| [BasicConversion](src/samples/BasicConversion) | Console app demonstrating text, JSON, and HTML conversion with DI |
+See [Samples Guide](docs/samples.md) for detailed walkthroughs.
+
+### Simple Samples
+
+| Sample | Description | Run Command |
+|--------|-------------|-------------|
+| [BasicConversion](src/samples/BasicConversion) | Text, JSON, and HTML conversion with DI | `dotnet run --project src/samples/BasicConversion/BasicConversion.csproj` |
+| [CsvConversion](src/samples/CsvConversion) | CSV and TSV → Markdown tables | `dotnet run --project src/samples/CsvConversion/CsvConversion.csproj` |
+| [XmlYamlConversion](src/samples/XmlYamlConversion) | XML and YAML → fenced code blocks | `dotnet run --project src/samples/XmlYamlConversion/XmlYamlConversion.csproj` |
+| [PdfConversion](src/samples/PdfConversion) | PDF → Markdown with page metadata + streaming | `dotnet run --project src/samples/PdfConversion/PdfConversion.csproj` |
+| [DocxConversion](src/samples/DocxConversion) | DOCX → Markdown with headings, tables, links | `dotnet run --project src/samples/DocxConversion/DocxConversion.csproj` |
+| [RtfEpubConversion](src/samples/RtfEpubConversion) | RTF and EPUB → Markdown | `dotnet run --project src/samples/RtfEpubConversion/RtfEpubConversion.csproj` |
+| [ExcelConversion](src/samples/ExcelConversion) | Excel .xlsx → Markdown tables (Excel package) | `dotnet run --project src/samples/ExcelConversion/ExcelConversion.csproj` |
+| [PowerPointConversion](src/samples/PowerPointConversion) | PPTX slides + notes → Markdown (PowerPoint package) | `dotnet run --project src/samples/PowerPointConversion/PowerPointConversion.csproj` |
+| [AiImageDescription](src/samples/AiImageDescription) | Image OCR/captioning via IChatClient (AI package) | `dotnet run --project src/samples/AiImageDescription/AiImageDescription.csproj` |
+| [StreamingConversion](src/samples/StreamingConversion) | IAsyncEnumerable streaming for large PDFs | `dotnet run --project src/samples/StreamingConversion/StreamingConversion.csproj` |
+| [CustomConverter](src/samples/CustomConverter) | Build a custom IMarkdownConverter (.ini files) | `dotnet run --project src/samples/CustomConverter/CustomConverter.csproj` |
+| [PluginPackage](src/samples/PluginPackage) | Build and register a custom IConverterPlugin | `dotnet run --project src/samples/PluginPackage/PluginPackage.csproj` |
+| [AllFormats](src/samples/AllFormats) | Converts all supported formats in one app | `dotnet run --project src/samples/AllFormats/AllFormats.csproj` |
+
+### End-to-End Samples
+
+| Sample | Description | Run Command |
+|--------|-------------|-------------|
+| [MarkItDotNet.WebApi](src/samples/MarkItDotNet.WebApi) | ASP.NET Core Minimal API with file upload + streaming | `dotnet run --project src/samples/MarkItDotNet.WebApi/MarkItDotNet.WebApi.csproj` |
+| [BatchProcessor](src/samples/BatchProcessor) | Watches folder and batch-converts files to .md | `dotnet run --project src/samples/BatchProcessor/BatchProcessor.csproj` |
+| [RagPipeline](src/samples/RagPipeline) | RAG ingestion: files → Markdown → chunked JSON | `dotnet run --project src/samples/RagPipeline/RagPipeline.csproj` |
 
 ## Documentation
 
+- [Samples Guide](docs/samples.md) — detailed walkthroughs for all 16 sample projects
 - [Architecture](docs/architecture.md) — design decisions, plugin system, converter pipeline, and internal structure
 - [Plugins Guide](docs/plugins.md) — how to create custom plugin packages
 - [Building & Testing](docs/building-and-testing.md) — how to build from source and run tests
