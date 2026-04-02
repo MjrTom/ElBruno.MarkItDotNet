@@ -24,6 +24,11 @@ public static class ServiceCollectionExtensions
 
         // Register built-in converters
         registry.Register(new PlainTextConverter());
+        registry.Register(new JsonConverter());
+        registry.Register(new HtmlConverter());
+        registry.Register(new DocxConverter());
+        registry.Register(new PdfConverter());
+        registry.Register(new ImageConverter());
 
         services.AddSingleton(registry);
         services.AddSingleton<MarkdownService>();

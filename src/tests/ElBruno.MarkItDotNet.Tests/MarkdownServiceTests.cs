@@ -85,4 +85,82 @@ public class MarkdownServiceTests
         var act = () => new MarkdownService(null!);
         act.Should().Throw<ArgumentNullException>();
     }
+
+    [Fact]
+    public async Task ConvertAsync_EmptyFilePath_ThrowsArgumentException()
+    {
+        var service = CreateService();
+        var act = () => service.ConvertAsync(string.Empty);
+        await act.Should().ThrowAsync<ArgumentException>();
+    }
+
+    [Fact]
+    public async Task ConvertAsync_WhitespaceFilePath_ThrowsArgumentException()
+    {
+        var service = CreateService();
+        var act = () => service.ConvertAsync("   ");
+        await act.Should().ThrowAsync<ArgumentException>();
+    }
+
+    [Fact]
+    public async Task ConvertAsync_Stream_NullExtension_ThrowsArgumentException()
+    {
+        var service = CreateService();
+        using var stream = new MemoryStream();
+        var act = () => service.ConvertAsync(stream, null!);
+        await act.Should().ThrowAsync<ArgumentException>();
+    }
+
+    [Fact]
+    public async Task ConvertAsync_Stream_EmptyExtension_ThrowsArgumentException()
+    {
+        var service = CreateService();
+        using var stream = new MemoryStream();
+        var act = () => service.ConvertAsync(stream, string.Empty);
+        await act.Should().ThrowAsync<ArgumentException>();
+    }
+
+    [Fact]
+    public async Task ConvertAsync_UnsupportedFilePath_ReturnFailure()
+    {
+        var service = CreateService();
+        var path = Path.GetTempFileName();
+        try
+        {
+            File.Move(path, Path.ChangeExtension(path, ".xyz"), overwrite: true);
+            path = Path.ChangeExtension(path, ".xyz");
+
+            var result = await service.ConvertAsync(path);
+
+            result.Success.Should().BeFalse();
+            result.ErrorMessage.Should().Contain("not supported");
+        }
+        finally
+        {
+            if (File.Exists(path)) File.Delete(path);
+        }
+    }
+
+    [Fact]
+    public async Task ConvertAsync_Stream_CaseInsensitiveExtension()
+    {
+        var service = CreateService();
+        using var stream = new MemoryStream("content"u8.ToArray());
+
+        var result = await service.ConvertAsync(stream, ".TXT");
+
+        result.Success.Should().BeTrue();
+        result.Markdown.Should().Be("content");
+    }
+
+    [Fact]
+    public async Task ConvertAsync_FileNotFound_ReturnFailure()
+    {
+        var service = CreateService();
+
+        var result = await service.ConvertAsync("nonexistent_file.txt");
+
+        result.Success.Should().BeFalse();
+        result.ErrorMessage.Should().NotBeNullOrEmpty();
+    }
 }

@@ -17,6 +17,11 @@ public class MarkdownConverter
     {
         var registry = new ConverterRegistry();
         registry.Register(new PlainTextConverter());
+        registry.Register(new JsonConverter());
+        registry.Register(new HtmlConverter());
+        registry.Register(new DocxConverter());
+        registry.Register(new PdfConverter());
+        registry.Register(new ImageConverter());
         _service = new MarkdownService(registry);
     }
 
