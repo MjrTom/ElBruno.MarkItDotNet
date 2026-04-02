@@ -6,5 +6,6 @@
     <Project Path="src/tests/ElBruno.MarkItDotNet.Tests/ElBruno.MarkItDotNet.Tests.csproj" />
   </Folder>
   <Folder Name="/src/samples/">
+    <Project Path="src/samples/BasicConversion/BasicConversion.csproj" />
   </Folder>
 </Solution>
