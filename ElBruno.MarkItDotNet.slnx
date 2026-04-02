@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ElBruno.MarkItDotNet/ElBruno.MarkItDotNet.csproj" />
+  </Folder>
+  <Folder Name="/src/tests/">
+    <Project Path="src/tests/ElBruno.MarkItDotNet.Tests/ElBruno.MarkItDotNet.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/samples/">
+  </Folder>
+</Solution>
