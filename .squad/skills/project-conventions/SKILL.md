@@ -1,56 +1,54 @@
 ---
 name: "project-conventions"
-description: "Core conventions and patterns for this codebase"
+description: "Core conventions and patterns for ElBruno.MarkItDotNet"
 domain: "project-conventions"
-confidence: "medium"
-source: "template"
+confidence: "high"
+source: "lambert-phase1"
 ---
 
 ## Context
 
-> **This is a starter template.** Replace the placeholder patterns below with your actual project conventions. Skills train agents on codebase-specific practices — accurate documentation here improves agent output quality.
+ElBruno.MarkItDotNet follows the same project patterns as ElBruno.LocalLLMs.
 
 ## Patterns
 
-### [Pattern Name]
+### Solution Format
+- Use `.slnx` (XML-based), never `.sln`
+- Folder structure: `/src/`, `/src/tests/`, `/src/samples/`
 
-Describe a key convention or practice used in this codebase. Be specific about what to do and why.
+### Target Frameworks
+- Libraries: `net8.0;net10.0` (multi-target)
+- Tests: `net8.0;net10.0` (multi-target)
+- CI builds: `-p:TargetFrameworks=net8.0` to avoid SDK requirement
 
-### Error Handling
-
-<!-- Example: How does your project handle errors? -->
-<!-- - Use try/catch with specific error types? -->
-<!-- - Log to a specific service? -->
-<!-- - Return error objects vs throwing? -->
+### NuGet Packaging
+- Shared metadata in `Directory.Build.props` (authors, license, icon)
+- Per-project: PackageId, Description, Tags, Version in .csproj
+- Pack README.md and images/nuget_logo.png via ItemGroup with relative paths
 
 ### Testing
-
-<!-- Example: What test framework? Where do tests live? How to run them? -->
-<!-- - Test framework: Jest/Vitest/node:test/etc. -->
-<!-- - Test location: test/, __tests__/, *.test.ts, etc. -->
-<!-- - Run command: npm test, etc. -->
+- Framework: xUnit 2.9.0
+- Assertions: FluentAssertions 8.3.0
+- Coverage: coverlet.collector
+- Location: `src/tests/{ProjectName}.Tests/`
+- Run: `dotnet test ElBruno.MarkItDotNet.slnx`
 
 ### Code Style
-
-<!-- Example: Linting, formatting, naming conventions -->
-<!-- - Linter: ESLint config? -->
-<!-- - Formatter: Prettier? -->
-<!-- - Naming: camelCase, snake_case, etc.? -->
+- `.editorconfig` at repo root
+- File-scoped namespaces (warning level)
+- `var` preferred everywhere
+- Private fields: `_camelCase`
 
 ### File Structure
-
-<!-- Example: How is the project organized? -->
-<!-- - src/ — Source code -->
-<!-- - test/ — Tests -->
-<!-- - docs/ — Documentation -->
-
-## Examples
-
 ```
-// Add code examples that demonstrate your conventions
+├── Directory.Build.props, global.json, .editorconfig
+├── ElBruno.MarkItDotNet.slnx
+├── src/ElBruno.MarkItDotNet/          (core library)
+├── src/tests/ElBruno.MarkItDotNet.Tests/
+├── images/nuget_logo.png
+├── README.md, LICENSE
 ```
 
 ## Anti-Patterns
-
-<!-- List things to avoid in this codebase -->
-- **[Anti-pattern]** — Explanation of what not to do and why.
+- **Never use .sln** — always .slnx XML format
+- **Never hardcode version year** — use `$([System.DateTime]::Now.Year)` in Directory.Build.props
