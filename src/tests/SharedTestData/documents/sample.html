@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sample Document</title>
+</head>
+<body>
+    <h1>Sample Document</h1>
+    <p>This is a sample document used for testing the MarkItDotNet library conversion capabilities.</p>
+
+    <h2>Features</h2>
+    <ul>
+        <li>Convert HTML to Markdown</li>
+        <li>Support for <strong>bold</strong> and <em>italic</em> text</li>
+        <li>Handle <a href="https://github.com/elbruno/markitdotnet">hyperlinks</a></li>
+    </ul>
+
+    <h2>Code Example</h2>
+    <pre><code>var converter = new MarkdownConverter();
+var result = await converter.ConvertAsync("sample.html");</code></pre>
+
+    <h2>Table</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Format</th>
+                <th>Extension</th>
+                <th>Supported</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>HTML</td>
+                <td>.html</td>
+                <td>Yes</td>
+            </tr>
+            <tr>
+                <td>PDF</td>
+                <td>.pdf</td>
+                <td>Yes</td>
+            </tr>
+            <tr>
+                <td>Word</td>
+                <td>.docx</td>
+                <td>Yes</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Ordered List</h2>
+    <ol>
+        <li>First item</li>
+        <li>Second item</li>
+        <li>Third item</li>
+    </ol>
+
+    <blockquote>
+        <p>This is a blockquote for testing purposes.</p>
+    </blockquote>
+</body>
+</html>
