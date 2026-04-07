@@ -32,6 +32,10 @@
     <Project Path="src/tests/ElBruno.MarkItDotNet.AzureSearch.Tests/ElBruno.MarkItDotNet.AzureSearch.Tests.csproj" />
     <Project Path="src/tests/ElBruno.MarkItDotNet.Sync.Tests/ElBruno.MarkItDotNet.Sync.Tests.csproj" />
     <Project Path="src/tests/ElBruno.MarkItDotNet.Integration.Tests/ElBruno.MarkItDotNet.Integration.Tests.csproj" />
+    <Project Path="src/tests/ElBruno.MarkItDotNet.Cli.Tests/ElBruno.MarkItDotNet.Cli.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/tools/">
+    <Project Path="src/ElBruno.MarkItDotNet.Cli/ElBruno.MarkItDotNet.Cli.csproj" />
   </Folder>
   <Folder Name="/src/samples/">
     <Project Path="src/samples/BasicConversion/BasicConversion.csproj" />
